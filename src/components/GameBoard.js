@@ -21,6 +21,10 @@ function GameBoard() {
     };
 
     fetchGame();
+
+    const interval = setInterval(fetchGame, 5000);
+
+    return () => clearInterval(interval);
   }, [id]);
 
   const handleMove = async (from, to) => {
