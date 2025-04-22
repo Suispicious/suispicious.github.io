@@ -1,27 +1,28 @@
 import React from "react";
 import ReactDOM from 'react-dom/client';
-import { BrowserRouter, Routes, Route } from "react-router";
-import GameList from "./components/GameList";
-import GameBoard from "./components/GameBoard";
+import Router from "./components/Router";
 
-export default function Root() {
-  console.log('Hello')
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<GameList />} />
-        <Route path=":id" element={<GameBoard />} />
-      </Routes>
-    </BrowserRouter>
-  );
-}
+import '@mysten/dapp-kit/dist/index.css';
 
+import { SuiClientProvider, WalletProvider } from '@mysten/dapp-kit';
+import { getFullnodeUrl } from '@mysten/sui/client';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+const queryClient = new QueryClient();
+const networks = {
+	testnet: { url: getFullnodeUrl('testnet') },
+};
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
-
 root.render(
   <React.StrictMode>
-    <Root />
+    <QueryClientProvider client={queryClient}>
+			<SuiClientProvider networks={networks} defaultNetwork="testnet">
+        <WalletProvider>
+          <Router />
+        </WalletProvider>
+			</SuiClientProvider>
+		</QueryClientProvider>
   </React.StrictMode>
 );
