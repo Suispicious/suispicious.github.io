@@ -4,11 +4,11 @@ import { Chessboard } from "react-chessboard";
 import axios from "axios";
 import { Chess } from "chess.js";
 
-const BASE_URL = process.env.NODE_ENV === "production" 
-  ? "https://infinite-river-28424-7061d8d0450b.herokuapp.com" 
+const BASE_URL = process.env.NODE_ENV === "production"
+  ? "https://infinite-river-28424-7061d8d0450b.herokuapp.com"
   : "http://localhost:8080";
 
-function GameBoard() {
+function GameBoardComponent() {
   const { id } = useParams();
   const [game, setGame] = useState(new Chess());
 
@@ -28,9 +28,9 @@ function GameBoard() {
   }, [id]);
 
   const handleMove = async (from, to) => {
-    const move = game.move({ from, to, promotion: "q" });
-
-    if (move) {
+    try {
+      game.move({ from, to, promotion: "q" });
+      setGame(game);
       const response = await axios.put(`${BASE_URL}/games/${id}`, {
         from,
         to,
@@ -38,14 +38,13 @@ function GameBoard() {
       const newGame = new Chess();
       newGame.load(response.data.fen);
       setGame(newGame);
-    } else {
-      console.error("Invalid move");
+    } catch (error) {
+      console.error("Invalid move", error);
     }
   };
 
   return (
     <div>
-      <h1>Game ID: {id}</h1>
       <Chessboard
         id="GameBoard"
         position={game.fen()}
@@ -57,4 +56,4 @@ function GameBoard() {
   );
 }
 
-export default GameBoard;
+export default GameBoardComponent;

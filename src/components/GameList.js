@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router";
+import { useCurrentAccount, useSuiClientQuery } from '@mysten/dapp-kit';
 
 const BASE_URL = process.env.NODE_ENV === "production" 
   ? "https://infinite-river-28424-7061d8d0450b.herokuapp.com" 
@@ -8,37 +9,63 @@ const BASE_URL = process.env.NODE_ENV === "production"
 
 function GameList() {
   const [games, setGames] = useState([]);
+  const [queue, setQueue] = useState([]);
   const navigate = useNavigate();
+  const account = useCurrentAccount();
+
+  const startSoloGame = async () => {
+    const response = await axios.post(BASE_URL + "/games", {
+      player: account.address,
+    });
+    navigate(`/${response.data.id}`);
+  }
+
+  const fetchGames = async () => {
+    const response = await axios.get(BASE_URL + "/games?player=" + account.address);
+    setGames(response.data);
+  };
+
+  const fetchQueue = async () => {
+    const response = await axios.get(BASE_URL + "/queue");
+    setQueue(response.data);
+  }
+
+  const queueForGame = async () => {
+    const response = await axios.post(BASE_URL + "/queue", {
+      player: account.address,
+    });
+    setQueue([...queue, response.data]);
+  };
+
+  const deleteAllGames = async () => {
+    await axios.delete(BASE_URL + "/games");
+    setGames([]);
+  }
 
   useEffect(() => {
-    const fetchGames = async () => {
-      const response = await axios.get(BASE_URL + "/games");
-      setGames(response.data);
-    };
-
+    fetchQueue();
     fetchGames();
-  }, []);
-
-  const createGame = async () => {
-    const response = await axios.post(BASE_URL + "/games");
-    setGames([...games, response.data]);
-  };
-
-  const deleteGame = async (id) => {
-    await axios.delete(`${BASE_URL}/games/${id}`);
-    setGames(games.filter((game) => game.id !== id));
-  };
+  }, [account.address]);
 
   return (
     <div>
+      <button onClick={startSoloGame}>Start solo game</button>
+      <button onClick={queueForGame}>Find a match!</button>
+      <button onClick={deleteAllGames}>Delete all games</button>
+      <h2>Queue</h2>
+      <ul>
+        {queue.map((address) => (
+          <li key={address}>
+            Player: {address} {address === account.address ? "(You)" : ""}
+          </li>
+        ))}
+      </ul>
       <h1>Games</h1>
-      <button onClick={createGame}>Create New Game</button>
       <ul>
         {games.map((game) => (
           <li key={game.id}>
             Game ID: {game.id} - FEN: {game.fen}
             <button onClick={() => navigate(`/${game.id}`)}>Open</button>
-            <button onClick={() => deleteGame(game.id)}>Delete</button>
           </li>
         ))}
       </ul>
