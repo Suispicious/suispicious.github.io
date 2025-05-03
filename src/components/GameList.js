@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router";
-import { useCurrentAccount, useSuiClientQuery } from '@mysten/dapp-kit';
+import { useCurrentAccount } from '@mysten/dapp-kit';
 
 const BASE_URL = process.env.NODE_ENV === "production" 
   ? "https://infinite-river-28424-7061d8d0450b.herokuapp.com" 
@@ -45,7 +45,7 @@ function GameList() {
   useEffect(() => {
     fetchQueue();
     fetchGames();
-  }, [account.address]);
+  });
 
   return (
     <div>
