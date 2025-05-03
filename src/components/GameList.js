@@ -20,16 +20,6 @@ function GameList() {
     navigate(`/${response.data.id}`);
   }
 
-  const fetchGames = async () => {
-    const response = await axios.get(BASE_URL + "/games?player=" + account.address);
-    setGames(response.data);
-  };
-
-  const fetchQueue = async () => {
-    const response = await axios.get(BASE_URL + "/queue");
-    setQueue(response.data);
-  }
-
   const queueForGame = async () => {
     const response = await axios.post(BASE_URL + "/queue", {
       player: account.address,
@@ -43,9 +33,19 @@ function GameList() {
   }
 
   useEffect(() => {
+    const fetchGames = async () => {
+      const response = await axios.get(BASE_URL + "/games?player=" + account.address);
+      setGames(response.data);
+    };
+  
+    const fetchQueue = async () => {
+      const response = await axios.get(BASE_URL + "/queue");
+      setQueue(response.data);
+    }
+  
     fetchQueue();
     fetchGames();
-  });
+  }, [account.address]);
 
   return (
     <div>
