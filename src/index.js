@@ -19,7 +19,7 @@ root.render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
 			<SuiClientProvider networks={networks} defaultNetwork="testnet">
-        <WalletProvider>
+        <WalletProvider autoConnect>
           <Router />
         </WalletProvider>
 			</SuiClientProvider>
