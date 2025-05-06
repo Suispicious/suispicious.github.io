@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
 const seasons = ['Spring', 'Summer', 'Fall', 'Winter'];
 
@@ -6,10 +6,6 @@ const SeasonComponent = ({ chess, activeRule, gameRules, specialRules, handleAct
     const moveNumber = chess.moveNumber()
     const seasonNumber = Math.floor(moveNumber / 2) % 4;
     const season = seasons[seasonNumber];
-
-    useEffect(() => {
-        handleActivate(null); // Reset active rule when the turn changes
-    }, [chess.moveNumber()])
 
     const rules = [
         specialRules[gameRules[0]],
@@ -19,6 +15,10 @@ const SeasonComponent = ({ chess, activeRule, gameRules, specialRules, handleAct
     ]
 
     const renderActiveRule = (season, rule) => {
+        if (activeRule && activeRule.id !== rule.id) {
+            handleActivate(null);
+        }
+
         if (rule.passive && !activeRule) {
             handleActivate(rule.id);
         }
