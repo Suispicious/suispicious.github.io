@@ -6,12 +6,11 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Chess } from "chess.js";
 import { specialRules, handleMoveWithSpecialRule } from "./specialRules";
+import { gameIdToSeasons } from "../../utils";
 
 const BASE_URL = process.env.NODE_ENV === "production"
   ? "https://infinite-river-28424-7061d8d0450b.herokuapp.com"
   : "http://localhost:8080";
-
-
 
 function GameBoard() {
   const { id } = useParams();
@@ -21,6 +20,7 @@ function GameBoard() {
     chess: new Chess(),
     specialRules: {}
   });
+  const [seasons, setSeasons] = useState(undefined);
   const [activeRule, setActiveRule] = useState(null);
 
   useEffect(() => {
@@ -31,13 +31,8 @@ function GameBoard() {
       const newChess = new Chess();
       newChess.load(response.data.fen);
 
+      setSeasons(gameIdToSeasons(addr));
       setGame({
-        specialRules: { // Hardcoded for now, but should be fetched from the server
-          seasons: { // Maybe just "current rule" is enough if we keep a full list of rules outside the game object and map to seasons separately
-            current: 0,
-            rules: [0, 5, 8, 12],
-          }
-        },
         ...response.data,
         chess: newChess,
       });
@@ -96,6 +91,11 @@ function GameBoard() {
   }
 
   const handleActivateRule = async (ruleId) => {
+    if (ruleId === null) {
+      setActiveRule(null);
+      return;
+    }
+
     const rule = specialRules.find((rule) => rule.id === ruleId);
     if (!rule) {
       console.error("Rule not found:", ruleId);
@@ -110,11 +110,11 @@ function GameBoard() {
 
   return (
     <div>
-      {activeRule && <div>Active Rule: {activeRule.name}</div>}
       <GameBoardComponent game={game} onPieceDrop={handleMove} onSquareClick={onSquareClick} />
-      {game?.specialRules?.seasons && <SeasonComponent
+      {seasons && <SeasonComponent
+        chess={game.chess}
         activeRule={activeRule}
-        gameRules={game.specialRules.seasons}
+        gameRules={seasons}
         specialRules={specialRules}
         handleActivate={handleActivateRule}
       />}

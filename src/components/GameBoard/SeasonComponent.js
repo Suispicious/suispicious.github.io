@@ -1,14 +1,21 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 const seasons = ['Spring', 'Summer', 'Fall', 'Winter'];
 
-const SeasonComponent = ({ activeRule, gameRules, specialRules, handleActivate }) => {
-    const season = seasons[gameRules.current];
+const SeasonComponent = ({ chess, activeRule, gameRules, specialRules, handleActivate }) => {
+    const moveNumber = chess.moveNumber()
+    const seasonNumber = Math.floor(moveNumber / 2) % 4;
+    const season = seasons[seasonNumber];
+
+    useEffect(() => {
+        handleActivate(null); // Reset active rule when the turn changes
+    }, [chess.moveNumber()])
+
     const rules = [
-        specialRules[gameRules.rules[0]],
-        specialRules[gameRules.rules[1]],
-        specialRules[gameRules.rules[2]],
-        specialRules[gameRules.rules[3]]
+        specialRules[gameRules[0]],
+        specialRules[gameRules[1]],
+        specialRules[gameRules[2]],
+        specialRules[gameRules[3]]
     ]
 
     const renderActiveRule = (season, rule) => {
@@ -19,7 +26,8 @@ const SeasonComponent = ({ activeRule, gameRules, specialRules, handleActivate }
         return (
             <div>
                 <strong>{season}: {rule.name} - {rule.description}</strong>
-                {rule.passive || activeRule ? null : <button onClick={() => handleActivate(rule.id)}>Activate</button>}
+                {!rule.passive && !activeRule ? <button onClick={() => handleActivate(rule.id)}>Activate</button> : null}
+                {!rule.passive && activeRule ? <button onClick={() => handleActivate(null)}>Deactivate</button> : null}
             </div>
         );
     }
@@ -31,7 +39,7 @@ const SeasonComponent = ({ activeRule, gameRules, specialRules, handleActivate }
             <ul>
                 {seasons.map((season, index) => (
                     <li key={season}>
-                        {gameRules.current === index ?
+                        {seasonNumber === index ?
                             renderActiveRule(season, rules[index]) :
                             (
                                 <span>{season}: {rules[index].name} - {rules[index].description}</span>
