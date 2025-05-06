@@ -36,8 +36,15 @@ function stringToNumber(input) {
     return Math.abs(hash) % 16; // Map to range 0–15
 }
 
+const getCurrentSeasonRuleIdForGameIdAndTurn = (gameId, moveNumber) => {
+    const ruleIds = gameIdToSeasons(gameId); // Ensure gameId is valid
+    const seasonNumber = Math.floor(moveNumber / 2) % 4;
+    const ruleId = ruleIds[seasonNumber];
+    return ruleId;
+}
 
 module.exports = {
     isSquareNextTo,
     gameIdToSeasons,
+    getCurrentSeasonRuleIdForGameIdAndTurn
 }

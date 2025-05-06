@@ -29,7 +29,7 @@ function GameBoard() {
     const fetchGame = async () => {
       const response = await axios.get(`${BASE_URL}/games/${addr}`);
       const newChess = new Chess();
-      newChess.load(response.data.fen);
+      newChess.load(response.data.fen, { skipValidation: true });
 
       setSeasons(gameIdToSeasons(addr));
       setGame({
@@ -62,7 +62,7 @@ function GameBoard() {
       });
 
       const newGame = new Chess();
-      newGame.load(response.data.fen);
+      newGame.load(response.data.fen, { skipValidation: true });
 
       setGame({
         ...response.data,
