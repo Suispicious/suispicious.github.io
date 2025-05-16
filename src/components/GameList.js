@@ -21,12 +21,6 @@ function GameList() {
     navigate(`/${response.data.id}`);
   }
 
-  const queueForGame = async () => {
-    const response = await axios.post(BASE_URL + "/queue", {
-      player: account.address,
-    });
-    setQueue([...queue, response.data]);
-  };
 
   const deleteAllGames = async () => {
     await axios.delete(BASE_URL + "/games");
