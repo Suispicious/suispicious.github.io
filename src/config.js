@@ -1,3 +1,3 @@
 export default {
-    packageId: "0x8d3ef972f4bccb3824c6e1c054316ac29836d83bcc4cd988899e5c9bb61699a8",
+    packageId: "0x848bb8cd7af9aebba896a6ad56e3004444d679c69463ac46522c7e23c16a0cc9",
 }

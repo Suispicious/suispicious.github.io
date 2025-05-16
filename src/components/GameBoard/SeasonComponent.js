@@ -1,5 +1,3 @@
-import React from 'react';
-
 const seasons = ['Spring', 'Summer', 'Fall', 'Winter'];
 
 const SeasonComponent = ({ chess, activeRule, gameRules, specialRules, handleActivate }) => {

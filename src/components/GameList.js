@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router";
 import { useCurrentAccount } from '@mysten/dapp-kit';
+import JoinGameButton from "./JoinGameButton";
 
 const BASE_URL = process.env.NODE_ENV === "production" 
   ? "https://infinite-river-28424-7061d8d0450b.herokuapp.com" 
@@ -50,7 +51,7 @@ function GameList() {
   return (
     <div>
       <button onClick={startSoloGame}>Start solo game</button>
-      <button onClick={queueForGame}>Find a match!</button>
+      <JoinGameButton />
       <button onClick={deleteAllGames}>Delete all games</button>
       <h2>Queue</h2>
       <ul>
