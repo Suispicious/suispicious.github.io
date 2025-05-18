@@ -1,5 +1,5 @@
 const config = {
-    packageId: "0x848bb8cd7af9aebba896a6ad56e3004444d679c69463ac46522c7e23c16a0cc9",
+    packageId: "0x43db304ec29765f5f8d888f680d91b892961eaf4672765a8f516e05cdfc98da0",
 };
 
 export default config;
