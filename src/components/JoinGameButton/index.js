@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSignAndExecuteTransaction } from "@mysten/dapp-kit";
 import { Transaction } from "@mysten/sui/transactions";
 import axios from "axios";
@@ -13,7 +13,7 @@ function JoinGameButton() {
   const { mutateAsync } = useSignAndExecuteTransaction();
 
   // Fetch resources on mount
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchResources = async () => {
       try {
         const { data } = await axios.get(

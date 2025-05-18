@@ -10,17 +10,8 @@ const BASE_URL = process.env.NODE_ENV === "production"
 
 function GameList() {
   const [games, setGames] = useState([]);
-  const [queue, setQueue] = useState([]);
   const navigate = useNavigate();
   const account = useCurrentAccount();
-
-  const startSoloGame = async () => {
-    const response = await axios.post(BASE_URL + "/games", {
-      player: account.address,
-    });
-    navigate(`/${response.data.id}`);
-  }
-
 
   const deleteAllGames = async () => {
     await axios.delete(BASE_URL + "/games");
@@ -33,28 +24,13 @@ function GameList() {
       setGames(response.data);
     };
   
-    const fetchQueue = async () => {
-      const response = await axios.get(BASE_URL + "/queue");
-      setQueue(response.data);
-    }
-  
-    fetchQueue();
     fetchGames();
   }, [account.address]);
 
   return (
     <div>
-      <button onClick={startSoloGame}>Start solo game</button>
       <JoinGameButton />
       <button onClick={deleteAllGames}>Delete all games</button>
-      <h2>Queue</h2>
-      <ul>
-        {queue.map((address) => (
-          <li key={address}>
-            Player: {address} {address === account.address ? "(You)" : ""}
-          </li>
-        ))}
-      </ul>
       <h1>Games</h1>
       <ul>
         {games.map((game) => (
