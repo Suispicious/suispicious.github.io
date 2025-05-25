@@ -24,7 +24,7 @@ function LeaderBoard() {
     fetchLeaderboard();
     fetchPlayerScore();
     fetchTopPlayersIdsAndScores();
-  }, [leaderboardId]);
+  }, [account.address, leaderboardId, leaderboard]);
 
   const fetchPlayerScore = async () => {
   if (!leaderboard || !account.address) return;
