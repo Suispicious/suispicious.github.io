@@ -13,10 +13,8 @@ function LeaderBoard() {
   const [topPlayerScores, setTopPlayerScores] = useState([]);
   const [topPlayersIds, setTopPlayersIds] = useState([]);
   const account = useCurrentAccount();
-  console.log("🚀 ~ LeaderBoard ~ account:", account)
 
   useEffect(() => {
-    console.log("🚀 ~ LeaderBoard ~ useEffect triggered");
     const fetchLeaderboard = async () => {
       const response = await axios.get(BASE_URL + "/leaderboard");
       setLeaderboard(response.data.table);
@@ -28,10 +26,9 @@ function LeaderBoard() {
     fetchTopPlayersIdsAndScores();
   }, [leaderboardId]);
 
-
   const fetchPlayerScore = async () => {
   if (!leaderboard || !account.address) return;
-    const response = await axios.get(BASE_URL + "/table/" + leaderboard.id.id + "/player/" + account.address);
+    const response = await axios.get(BASE_URL + "/table/" + leaderboard?.id?.id + "/player/" + account.address);
     setPlayerScore(response.data.score);
   }
 
@@ -50,10 +47,13 @@ function LeaderBoard() {
     fetchPlayerScore()
   }
 
+  if (!leaderboardId || !leaderboard || !account) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div>
       <h1>Leaderboard</h1>
-      <h1>Increment Winner Score</h1>
       <button onClick={handleIncrementWinnerScore}>Increment</button>
       <h1>Player Score</h1>
       {topPlayersIds ? (
