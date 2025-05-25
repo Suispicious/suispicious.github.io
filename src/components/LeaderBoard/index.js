@@ -15,29 +15,44 @@ function LeaderBoard() {
   const account = useCurrentAccount();
 
   useEffect(() => {
+    if (!account?.address) return;
+
     const fetchLeaderboard = async () => {
       const response = await axios.get(BASE_URL + "/leaderboard");
       setLeaderboard(response.data.table);
       setLeaderboardId(response.data.leaderboardId);
-    }
+    };
 
     fetchLeaderboard();
+  }, [account?.address]);
+
+  useEffect(() => {
+    if (!leaderboardId) return;
+
+    const fetchTopPlayers = async () => {
+      const response = await axios.get(BASE_URL + "/leaderboard/" + leaderboardId + "/top_players");
+      setTopPlayersIds(response.data.topPlayerIds);
+      setTopPlayerScores(response.data.topPlayerScores);
+    };
+
+    fetchTopPlayers();
+  }, [leaderboardId]);
+
+  useEffect(() => {
+    if (!leaderboard || !account?.address) return;
+
+    const fetchPlayerScore = async () => {
+      const response = await axios.get(BASE_URL + "/table/" + leaderboard?.id?.id + "/player/" + account.address);
+      setPlayerScore(response.data.score);
+    };
+
     fetchPlayerScore();
-    fetchTopPlayersIdsAndScores();
-  }, [account.address, leaderboardId, leaderboard]);
+  }, [leaderboard, account?.address]);
 
   const fetchPlayerScore = async () => {
-  if (!leaderboard || !account.address) return;
+    if (!leaderboard || !account.address) return;
     const response = await axios.get(BASE_URL + "/table/" + leaderboard?.id?.id + "/player/" + account.address);
     setPlayerScore(response.data.score);
-  }
-
-  const fetchTopPlayersIdsAndScores = async () => {
-  if (!leaderboardId) return;
-    const response = await axios.get(BASE_URL + "/leaderboard/" + leaderboardId + "/top_players");
-    setTopPlayersIds(response.data.topPlayerIds);
-    setTopPlayerScores(response.data.topPlayerScores);
-    
   }
   
   const handleIncrementWinnerScore = async () => {
